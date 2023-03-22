@@ -11,7 +11,7 @@ from fights.envs import othello
 
 class MinimaxAgent(BaseAgent):
     """
-    AI agent with minimax search algorithm and alpha-beta pruning.
+    AI agent with minimax search algorithm.
     """
     env_id = ("othello", 0)
 
@@ -37,20 +37,12 @@ class MinimaxAgent(BaseAgent):
         return np.count_nonzero(state.board[self.agent_id]) - np.count_nonzero(
             state.board[1 - self.agent_id])
 
-    def minimax_search(
-            self, state: othello.OthelloState, depth, is_opp, threshold):
-
+    def minimax_search(self, state: othello.OthelloState, depth, is_opp):
         """
-        Tree searching with minimax algorithm and
-        alpha-beta pruning algorithm.
+        Tree searching with minimax algorithm.
         """
         if depth == self.depth:
             return self.value_function(state)
-
-        if is_opp:
-            maxmin_point = 99999
-        else:
-            maxmin_point = -99999
 
         possible_actions = []
         for cx in range(othello.OthelloEnv.board_size):
@@ -59,24 +51,17 @@ class MinimaxAgent(BaseAgent):
                 if state.legal_actions[self.agent_id ^ is_opp][cx][cy]:
                     possible_actions.append(action)
 
+        value_lst = []
         for action in possible_actions:
             next_state = othello.OthelloEnv().step(
                 state, self.agent_id ^ is_opp, action)
-            next_point = self.minimax_search(
-                next_state, depth+1, 1-is_opp, maxmin_point)
+            value_lst.append(
+                self.minimax_search(next_state, depth+1, 1-is_opp))
 
-            if is_opp:
-                if maxmin_point > next_point:
-                    maxmin_point = next_point
-                    if threshold >= next_point:
-                        return next_point
-            else:
-                if maxmin_point < next_point:
-                    maxmin_point = next_point
-                    if threshold <= next_point:
-                        return next_point
-
-        return maxmin_point
+        if is_opp:
+            return min(value_lst)
+        else:
+            return max(value_lst)
 
     def __call__(self, state: othello.OthelloState) -> othello.OthelloAction:
         possible_actions = []
@@ -92,7 +77,7 @@ class MinimaxAgent(BaseAgent):
             next_state = othello.OthelloEnv().step(
                 state, self.agent_id, action)
             next_point = self.minimax_search(
-                next_state, 1, 1, max_point)
+                next_state, 1, 1)
             if next_point > max_point:
                 best_actions = [action]
             elif next_point == max_point:

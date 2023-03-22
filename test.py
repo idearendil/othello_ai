@@ -8,36 +8,13 @@ import sys
 import colorama
 import numpy as np
 
-from fights.base import BaseAgent
 from fights.envs import othello
 
-from minimax_agent import MinimaxAgent
+from alphabetaAI import AlphaBetaAgent
+from minimaxAI import MinimaxAgent
+from randomAI import RandomAgent
 
 sys.path.append("../")
-
-
-class RandomAgent(BaseAgent):
-    """
-    Just random agent
-    """
-    env_id = ("othello", 0)  # type: ignore
-
-    def __init__(self, agent_id: int, seed: int = 0) -> None:
-        self.agent_id = agent_id  # type: ignore
-        self._rng = np.random.default_rng(seed)
-
-    def _get_all_actions(self, state: othello.OthelloState):
-        actions = []
-        for cx in range(othello.OthelloEnv.board_size):
-            for cy in range(othello.OthelloEnv.board_size):
-                action = [cx, cy]
-                if state.legal_actions[self.agent_id][cx][cy]:
-                    actions.append(action)
-        return actions
-
-    def __call__(self, state: othello.OthelloState) -> othello.OthelloAction:
-        actions = self._get_all_actions(state)
-        return self._rng.choice(actions)
 
 
 def fallback_to_ascii(s: str) -> str:
@@ -47,7 +24,8 @@ def fallback_to_ascii(s: str) -> str:
     try:
         s.encode(sys.stdout.encoding)
     except UnicodeEncodeError:
-        s = re.sub("[┌┬┐├┼┤└┴┘╋]", "+", re.sub("[─━]", "-", re.sub("[│┃]", "|", s)))
+        s = re.sub(
+            "[┌┬┐├┼┤└┴┘╋]", "+", re.sub("[─━]", "-", re.sub("[│┃]", "|", s)))
     return s
 
 
@@ -59,11 +37,8 @@ def run():
     colorama.init()
 
     state = othello.OthelloEnv().initialize_state()
-    agents = [RandomAgent(0), RandomAgent(1)]
+    agents = [MinimaxAgent(0, 5, 0), MinimaxAgent(1, 5, 0)]
 
-    print("\x1b[2J")
-
-    step_num = 0
     while not state.done:
 
         print("\x1b[1;1H")
@@ -80,11 +55,11 @@ def run():
             pause = input()
 
             if state.done:
-                print(f"agent {np.argmax(state.reward)} \
-                    won in {step_num} iters")
+                if state.reward[0] != 0:
+                    print(f"agent {np.argmax(state.reward)} won!!")
+                else:
+                    print("draw!!")
                 break
-
-        step_num += 1
 
 
 if __name__ == "__main__":
