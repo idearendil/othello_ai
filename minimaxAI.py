@@ -44,6 +44,9 @@ class MinimaxAgent(BaseAgent):
         if depth == self.depth:
             return self.value_function(state)
 
+        if state.done:
+            return state.reward[self.agent_id] * 100
+
         possible_actions = []
         for cx in range(othello.OthelloEnv.board_size):
             for cy in range(othello.OthelloEnv.board_size):

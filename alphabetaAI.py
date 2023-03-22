@@ -47,6 +47,9 @@ class AlphaBetaAgent(BaseAgent):
         if depth == self.depth:
             return self.value_function(state)
 
+        if state.done:
+            return state.reward[self.agent_id] * 100
+
         if is_opp:
             maxmin_point = 99999
         else:

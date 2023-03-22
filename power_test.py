@@ -21,7 +21,7 @@ def run():
     for game_id in range(100):
 
         state = othello.OthelloEnv().initialize_state()
-        agents = [AlphaBetaAgent(0, 5, seed=game_id),
+        agents = [RandomAgent(0, seed=game_id),
                   MinimaxAgent(1, 5, seed=game_id)]
 
         while not state.done:
