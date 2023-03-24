@@ -13,6 +13,7 @@ from fights.envs import othello
 from alphabetaAI import AlphaBetaAgent
 from minimaxAI import MinimaxAgent
 from randomAI import RandomAgent
+from manual import ManualAgent
 
 sys.path.append("../")
 
@@ -33,11 +34,10 @@ def run():
     """
     Just run the othello environment with two random agents.
     """
-    assert othello.OthelloEnv.env_id == RandomAgent.env_id
     colorama.init()
 
     state = othello.OthelloEnv().initialize_state()
-    agents = [MinimaxAgent(0, 5, 0), MinimaxAgent(1, 5, 0)]
+    agents = [ManualAgent(0), MinimaxAgent(1, 5, 0)]
 
     while not state.done:
 

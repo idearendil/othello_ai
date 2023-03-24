@@ -82,6 +82,7 @@ class MinimaxAgent(BaseAgent):
             next_point = self.minimax_search(
                 next_state, 1, 1)
             if next_point > max_point:
+                max_point = next_point
                 best_actions = [action]
             elif next_point == max_point:
                 best_actions.append(action)

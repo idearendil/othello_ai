@@ -15,7 +15,7 @@ class AlphaBetaAgent(BaseAgent):
     """
     env_id = ("othello", 0)
 
-    def __init__(self, agent_id: int, depth: int = 1, seed: int = 0) -> None:
+    def __init__(self, agent_id: int, depth: int, seed: int) -> None:
         self.agent_id = agent_id
         self.depth = depth
         self._rng = np.random.default_rng(seed)
@@ -71,12 +71,12 @@ class AlphaBetaAgent(BaseAgent):
             if is_opp:
                 if maxmin_point > next_point:
                     maxmin_point = next_point
-                    if threshold >= next_point:
+                    if threshold > next_point:
                         return next_point
             else:
                 if maxmin_point < next_point:
                     maxmin_point = next_point
-                    if threshold <= next_point:
+                    if threshold < next_point:
                         return next_point
 
         return maxmin_point
@@ -97,6 +97,7 @@ class AlphaBetaAgent(BaseAgent):
             next_point = self.minimax_search(
                 next_state, 1, 1, max_point)
             if next_point > max_point:
+                max_point = next_point
                 best_actions = [action]
             elif next_point == max_point:
                 best_actions.append(action)

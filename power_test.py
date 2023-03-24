@@ -14,7 +14,6 @@ def run():
     """
     Running test.
     """
-    assert othello.OthelloEnv.env_id == RandomAgent.env_id
 
     win_rate = [0, 0, 0]
 
@@ -22,7 +21,7 @@ def run():
 
         state = othello.OthelloEnv().initialize_state()
         agents = [RandomAgent(0, seed=game_id),
-                  MinimaxAgent(1, 5, seed=game_id)]
+                  RandomAgent(1, seed=game_id)]
 
         while not state.done:
 
